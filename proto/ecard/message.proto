@@ -1,0 +1,116 @@
+
+syntax = "proto3";
+
+
+option java_multiple_files = true;
+option java_package = "proto.ecard";
+option java_outer_classname = "MessageProto";
+option objc_class_prefix = "HLW";
+
+option go_package="github.com/generated/gateway";
+
+import "google/api/annotations.proto";
+
+package ecard;
+
+service MessageService{
+
+  rpc saveMessage(SaveMessage) returns (SaveMessageResponse) {
+    option (google.api.http) = {
+      post: "/message/save",
+      body: "*",
+    };
+  }
+
+  rpc markMessageAsTrending(MessageTrendingRequest) returns (MessageTrendingResponse) {
+    option (google.api.http) = {
+      post: "/message/set-trending/{id}/{status}",
+      body: "*",
+    };
+  }
+
+  rpc trendingMessage(Empty2) returns (TrendingMessageList) {
+    option (google.api.http) = {
+      get: "/message/show-trending-list",
+    };
+  }
+
+  rpc showAllMessage(Empty2) returns (AllMessageList) {
+    option (google.api.http) = {
+      get: "/message/show-all-message",
+    };
+  }
+
+  rpc showMessageOfThisCategory(CategoryDetails) returns (CategoryMessageList) {
+    option (google.api.http) = {
+      get: "/message/list-of-this-category/{category_name}",
+    };
+  }
+
+  rpc deleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse) {
+    option (google.api.http) = {
+      delete: "/message/delete/{id}",
+    };
+  }
+}
+
+
+
+message SaveMessage {
+  string message = 1;
+  string category = 2;
+  bool publish = 3;
+  int32 priority = 4;
+}
+
+message SaveMessageResponse {
+  Message saved_message = 1;
+}
+
+message Message {
+  string id = 1;
+  string message = 2;
+  string category = 3;
+  bool publish = 4;
+  int32 priority = 5;
+  bool trending = 6;
+  int64 timestamp = 7;
+}
+
+message MessageTrendingRequest {
+  string id = 1;
+  bool status = 2;
+}
+
+message MessageTrendingResponse {
+  bool success = 1;
+  string message = 2;
+  bool trending = 3;
+}
+
+message TrendingMessageList {
+  repeated Message trending_message_list = 1;
+}
+
+message AllMessageList {
+  repeated Message all_message_list = 1;
+}
+
+message CategoryDetails {
+  string category_name = 1;
+}
+
+message CategoryMessageList {
+  repeated Message category_specific_message = 1;
+}
+
+message Empty2 {}
+
+message DeleteMessageRequest {
+  string id = 1;
+}
+
+message DeleteMessageResponse {
+  bool success = 1;
+}
+

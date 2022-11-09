@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "proto.ecard";
+option java_outer_classname = "CategoryProto";
+option objc_class_prefix = "HLW";
+
+package ecard;
+
+option go_package="github.com/generated/gateway";
+
+import "google/api/annotations.proto";
+
+service CategoryService {
+
+  rpc saveCategories(SaveCategoriesRequest) returns (SaveCategoriesResponse) {
+    option (google.api.http) = {
+      post: "/category/save",
+      body: "*"
+    };
+  }
+
+  rpc showAllCategories(Empty1) returns (ListAllCategories) {
+    option (google.api.http) = {
+      get: "/category/show-all-category",
+
+    };
+  }
+
+  rpc getListOfCategories(Empty1) returns (ListOfCategoryNames) {
+    option (google.api.http) = {
+      get:"/category/show-name-list",
+
+    };
+  }
+
+  rpc markCategoriesAsTrending(MarkCategoriesAsTrendingRequest) returns (MarkCategoriesAsTrendingResponse) {
+    option (google.api.http) = {
+      post:"/category/set-trending/{name}/{trending}",
+      body: "*"
+    };
+  }
+
+  rpc getTrendingStatusOfCategory(TrendingStatusRequest) returns (TrendingStatusResponse) {
+    option (google.api.http) = {
+      get:"/category/get-trending-status/{name}",
+    };
+  }
+
+  rpc deleteCategory(DeleteCategoryRequest) returns (DeleteCategoryResponse) {
+    option (google.api.http) = {
+      delete:"/category/delete/{name}",
+    };
+  }
+}
+
+
+message SaveCategoriesRequest {
+  string name = 1;
+  int32 priority = 2;
+  bool publish = 3;
+  bool trending = 4;
+  string url = 5;
+}
+
+message SaveCategoriesResponse {
+  Category saved_category = 1;
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
+  int32 priority = 3;
+  bool publish = 4;
+  bool trending = 5;
+  string url = 6;
+  int64 timestamp = 7;
+}
+
+message ListAllCategories {
+  repeated Category categories = 1;
+}
+
+message ListOfCategoryNames{
+  repeated string category_list = 1;
+}
+
+message MarkCategoriesAsTrendingRequest{
+  string name = 1;
+  bool trending = 2;
+}
+
+message  MarkCategoriesAsTrendingResponse {
+  bool success = 1;
+  string message = 2;
+  bool trending = 3;
+}
+
+message TrendingStatusRequest {
+  string name = 1;
+}
+
+message TrendingStatusResponse {
+  bool trending = 1;
+}
+
+message DeleteCategoryResponse {
+  bool success = 1;
+  string delete_message = 2;
+}
+
+message DeleteCategoryRequest {
+  string name = 1;
+}
+
+
+message Empty1 {}
+
+
+

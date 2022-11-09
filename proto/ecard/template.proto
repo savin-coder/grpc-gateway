@@ -1,0 +1,143 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "proto.ecard";
+option java_outer_classname = "TemplateProto";
+option objc_class_prefix = "HLW";
+
+package ecard;
+
+option go_package="github.com/generated/gateway";
+
+import "google/api/annotations.proto";
+
+service TemplateService {
+
+  rpc saveTemplate(SaveTemplateRequest) returns (SaveTemplateResponse) {
+    option (google.api.http) = {
+      post: "/template/save",
+      body: "*",
+    };
+  }
+
+  rpc trendingTemplate(Empty) returns (TrendingTemplateResponse)  {
+    option (google.api.http) = {
+      get: "/template/show-trending-templates",
+    };
+  }
+  rpc showAllTemplate(Empty) returns (TrendingTemplateResponse) {
+    option (google.api.http) = {
+      get: "/template/show-all-templates",
+    };
+  }
+  rpc mostDownloadedTemplate(Empty) returns (MostDownloadedTemplateResponse) {
+    option (google.api.http) = {
+      get: "/template/show-most-downloaded-templates",
+    };
+  }
+
+  rpc setTemplateAsTrending(TrendingRequest) returns (TrendingResponse) {
+    option (google.api.http) = {
+      post: "/template/set-trending/{id}/{status}",
+    };
+  }
+
+
+  rpc deleteTemplate(DeleteTemplateRequest) returns (DeleteTemplateResponse) {
+    option (google.api.http) = {
+      delete: "/template/delete/{id}",
+    };
+  }
+
+  rpc getTemplatesOfThisCategory(GetTemplateOfThisCategoryRequest) returns (TemplateListOfThisCategory) {
+    option (google.api.http) = {
+      get: "/template/get-templates-of-this-category/{category_name}",
+    };
+  }
+
+
+  //just to set dummy data
+  rpc saveDummyDownloadCounts(DownloadCountRequest) returns (DownloadCountResponse) {}
+  rpc getTemplateById(GetRequest) returns (GetResponse) {}
+
+}
+
+
+message GetTemplateOfThisCategoryRequest{
+  string category_name = 1;
+}
+
+message TemplateListOfThisCategory {
+  repeated Template templates = 1;
+}
+
+message GetRequest{
+  string id = 1;
+}
+
+message GetResponse{
+  Template template = 1;
+}
+
+message SaveTemplateRequest {
+  string title = 1;
+  string url = 2;
+  string category_name = 3;
+  int32 priority = 4;
+  string tags = 5;
+}
+
+message SaveTemplateResponse {
+  Template saved_template = 1;
+}
+
+message Template {
+  string id = 1;
+  string title = 2;
+  string url = 3;
+  bool trending = 4;
+  int32 priority = 5;
+  string category_name = 6;
+  string tags = 7;
+  int64 timestamp = 8;
+}
+
+message TrendingTemplateResponse{
+  repeated Template templates = 1;
+}
+
+message MostDownloadedTemplateResponse {
+  repeated Template templates = 1;
+}
+
+message TrendingRequest {
+  string id = 1;
+  bool status = 2;
+}
+
+message TrendingResponse {
+  bool success = 1;
+  string message = 2;
+  bool trending = 3;
+}
+
+message DeleteTemplateRequest {
+  string id = 1;
+}
+
+message DeleteTemplateResponse {
+  bool success = 1;
+}
+
+
+message Empty{}
+
+
+message DownloadCountRequest{
+  string template_id = 1;
+  int64 download_counts = 2;
+}
+
+message DownloadCountResponse {
+  bool success = 1;
+}

@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo
+    container_name: ecard_table
+    user: root
+    volumes:
+      - ./mongodb:/data/db
+    environment:
+     - MONGO_INITDB_ROOT_USERNAME=admin
+     - MONGO_INITDB_ROOT_PASSWORD=secret
+    healthcheck:
+      test: ["CMD","mongo", "--eval", "db.adminCommand('ping')"]
+    networks:
+     - backend_network
+
+
+  backend:
+    image: swornimsabin/ecards-backend:latest
+    environment:
+      - mongodb.uri=mongodb://admin:secret@mongodb:27017/
+    networks:
+     - backend_network
+    depends_on:
+      mongodb: 
+       condition: service_healthy
+
+  grpc:
+    image:  swornimsabin/ecards-grpc-gateway:latest
+    networks:
+     - backend_network
+    depends_on:
+     - backend
+    environment:
+     - HOSTPORT=backend:50051
+    ports:
+     - 8090:8090
+
+
+networks:
+ backend_network:

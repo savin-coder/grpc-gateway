@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+
+option java_multiple_files = true;
+option java_package = "proto.ecard";
+option java_outer_classname = "StickerProto";
+option objc_class_prefix = "HLW";
+option go_package="github.com/generated/gateway";
+
+import "google/api/annotations.proto";
+
+package ecard;
+
+service StickerService {
+
+  rpc saveSticker(SaveSticker) returns (SaveStickerResponse) {
+    option (google.api.http) = {
+      post: "/sticker/save",
+      body: "*",
+    };
+  }
+  rpc setStickerAsTrending (StickerTrendingRequest) returns (StickerTrendingResponse) {
+    option (google.api.http) = {
+      post:"/sticker/set-trending/{id}/{status}",
+    };
+  }
+
+  rpc trendingSticker(Empty3) returns (TrendingStickerList) {
+    option (google.api.http) = {
+      get: "/sticker/show-trending-stickers",
+    };
+  }
+  rpc showAllSticker (Empty3) returns (AllStickerList) {
+    option (google.api.http) = {
+      get: "/sticker/show-all-stickers",
+    };
+  }
+
+  rpc showStickersOfThisCategory (StickerCategoryDetails) returns (CategoryStickerList) {
+    option (google.api.http) = {
+      get: "/sticker/show-stickers-of-this-category/{category_name}",
+    };
+  }
+
+  rpc deleteSticker(DeleteStickerRequest) returns (DeleteStickerResponse) {
+    option (google.api.http) = {
+      delete: "/sticker/delete/{id}",
+    };
+  }
+
+  rpc stickerImageList(StickerCategoryDetails) returns (StickerImageList) {
+    option (google.api.http) = {
+      get: "/sticker/image-url-list/{category_name}",
+    };
+  }
+
+}
+
+
+
+message StickerImageList {
+  repeated string sticker_urls = 1;
+}
+
+message SaveSticker {
+  string name = 1;
+  string url = 2;
+  int32 priority = 3;
+  string category = 4;
+  bool publish = 5;
+}
+
+message SaveStickerResponse {
+  Sticker saved_sticker = 1;
+}
+
+message Sticker {
+  string id = 1;
+  string name = 2;
+  string url = 3;
+  int32 priority = 4;
+  string category = 5;
+  bool publish = 6;
+  bool trending = 7;
+  int64 timestamp = 8;
+}
+
+message StickerTrendingRequest {
+  string id = 1;
+  bool status = 2;
+}
+
+message StickerTrendingResponse {
+  bool success = 1;
+  string message = 2;
+  bool trending = 3;
+}
+
+message TrendingStickerList {
+  repeated Sticker trending_sticker_list = 1;
+}
+
+message AllStickerList {
+  repeated Sticker all_sticker_list = 1;
+}
+
+message StickerCategoryDetails {
+  string category_name = 1;
+}
+
+message CategoryStickerList {
+  repeated Sticker category_sticker_list = 1;
+}
+
+message DeleteStickerRequest {
+  string id = 1;
+}
+
+message DeleteStickerResponse {
+  bool success = 1;
+}
+
+message Empty3 {}
+
