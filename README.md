@@ -1,7 +1,5 @@
 # grpc-gateway
 
-Foobar is a Python library for dealing with word pluralization.
-
 You can get full details of working of grpc gateway in [OFFICIAL GUIDE](https://github.com/grpc-ecosystem/grpc-gateway) if you are interested. But In this file, I am going to explain how this gateway works.
 
 ## Working Of This File
